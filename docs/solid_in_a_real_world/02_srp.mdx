@@ -1,0 +1,54 @@
+# SRP - Single Principle Responsability
+
+:::tip
+- Vale para Classes...
+- Vale para Métodos...
+- Vale para onde quisermos!
+
+"Uma classe, uma função, um módulo ou um simples elemento em um código deve fazer apenas uma tarefa, e esta tarefa deve ser feita apenas em favor de um ator.
+
+Entenda-se: A única razão para algo mudar é pela manifestação da vontade de seu ator/cliente. Do contrário, tudo deve permanecer como está".
+:::
+
+## Exemplo de uma classe:
+
+### Quando uma entidade atende às regras de negócio:
+
+```dart
+class ActivityEntity {
+  final int day;
+  final int month;
+  final int year;
+  final int dayOfWeek;
+  final int weekYear;
+  final List<ActivityItemEntity> items;
+  ActivityEntity({
+    required this.day,
+    required this.month,
+    required this.year,
+    required this.dayOfWeek,
+    required this.weekYear,
+    required this.items,
+  });
+}
+```
+
+### Quando um método atende apenas alguém específico:
+
+```dart
+ Future<void> _getActivities({
+    required int month,
+  }) async {
+    final result = await _getActivitiesUsecase.call(
+        param: GetActivityParam(
+      studentId: studentId,
+      month: month,
+    ));
+    result.fold(
+      (l) => null,
+      (success) {
+        _activities = success;
+      },
+    );
+  }
+```

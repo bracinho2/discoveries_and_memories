@@ -1,0 +1,59 @@
+# OCP - Open Closed Principle
+
+:::tip
+
+"... para que os sistemas de software sejam fáceis de mudar (...) o comportamento desses sistemas mude pela adição de um novo código em vez da alteração do código existente".
+
+:::
+
+### Abstract class
+
+Como fazemos para termos partes intercambiáveis em um software? Utilizamos nossas classes abstratas que contem regras de alto nível e cuja preocupação é apenas sobre regras de negócio!
+
+```dart
+abstract class RemoteDatabase {
+  Future<List<Map<String, dynamic>>> getData();
+  Future<bool> sendData({required Map<String, dynamic> data});
+}
+```
+
+### Implementation class
+
+Após definirmos as nossas regras de negócio em uma classe com esta finalidade, finalmente, poderemos trabalhar com os detalhes de nossa implementação.
+
+Aqui vem o pulo do gato: como nós temos as regras definidas em uma classe específica para esta finalidade podemos implementar os detalhes de nossas implementações seguindo nossas regras.
+
+Aqui temos dois exemplos de duas implementações diferentes que respondem a um mesmo contrato de regras de negócio:
+
+- Primeira implementação: 
+
+```dart
+class MyFirstDatabase implements RemoteDataBase {
+Future<List<Map<String, dynamic>>> getData(){
+    // my implementation;
+};
+  Future<bool> sendData({required Map<String, dynamic> data}){
+      // my implementation;
+  };
+}
+```
+
+- Segunda implementação: 
+
+
+```dart
+class MySecondDatabase implements RemoteDataBase {
+Future<List<Map<String, dynamic>>> getData(){
+    // my implementation;
+};
+  Future<bool> sendData({required Map<String, dynamic> data}){
+      // my implementation;
+  };
+}
+```
+
+Este conceito é relativamente simples, porém, ainda gera muita dúvida entre os programadores, especialmente, os programadores iniciantes.
+
+Lembrem-se:
+
+Utilize este recurso para escalar seu software com a segurança de poder expandir sem interferir no que está funcionando!

@@ -1,0 +1,24 @@
+# DIP - Dependency Inversion Principle
+
+:::tip
+"O código que implementa uma política de alto nível não deve depender do código que implementa detalhes de nível mais baixo".
+
+"Em uma interface abstrata, toda a mudança corresponde a uma mudança em suas implementações concretas. (...) bons designers e arquitetos de software trabalham duro para reduzir a volatilidade das interfaces".
+
+O componente abstrato contém todas as regras de negócio de alto nível da aplicação. Por sua vez, o componente concreto contém todos os detalhes da implementação que essas regras de negócio manipulam.
+:::
+
+```dart
+class GetOccurrences implements GetOccurrencesUsecase {
+  final OccurrenceRepository _getOccurrencesRepository;
+
+  GetOccurrences(this._getOccurrencesRepository);
+  @override
+  Future<OccurrencesResult> getOccurrences(
+      {required OccurrenceQueryParams params}) async {
+    return _getOccurrencesRepository.getOccurrences(
+      params: params,
+    );
+  }
+}
+```

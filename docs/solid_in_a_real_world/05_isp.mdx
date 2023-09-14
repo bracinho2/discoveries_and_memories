@@ -1,0 +1,45 @@
+# ISP - Interface Segregation Principle
+
+:::tip
+"... evitem depender de coisas que não usam".
+
+É prejudicial depender de módulos que contenham mais elementos do que você precisa. (...) Aprenda esta lição: depender de algo que contém itens desnecessários pode causar problemas inesperados.
+
+:::
+
+```dart
+abstract class Telefone {
+    void ligacao();
+}
+
+abstract Celular extends Telefone {
+    void sms();
+}
+
+abstract class Smartphone extends Celular implements Telefone {
+    void whatsapp();
+}
+```
+
+```dart
+class Nokia1100x implements Celular {
+    @override
+    void ligacao() => print('Eu sei fazer ligacao');
+
+    @override
+    void sms() => print('Eu sei enviar SMS);
+}
+```
+
+```dart
+class Android implements Smartphone {
+     @override
+    void ligacao() => print('Eu sei fazer ligacao');
+
+    @override
+    void sms() => print('Eu sei enviar SMS);
+
+    @override
+    void whatsapp() => print('Vamos zapear');
+}
+```

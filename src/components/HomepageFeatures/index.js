@@ -4,38 +4,35 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: 'Hamradio',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Um hobby incrível que eu recomendo para todos! Muito bom para aprender com a curiosidade de uma criança e com muitas coisas interessantes dos melhores cientistas.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Biblioteca',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+       Decidi criar uma biblioteca de tudo que eu descubro. Minha memória já não está eficiente por conta de tantos detalhes. Espero que a tecnologia me ajude! (Risos)
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Dart & Flutter',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Um universo incrível de desenvolvimento. Para quem gosta de gastar tempo escrevendo aplicativos é um prato cheio.
       </>
     ),
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({ Svg, title, description }) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">

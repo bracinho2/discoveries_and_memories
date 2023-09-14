@@ -1,0 +1,130 @@
+# Flutter Biometry
+
+:::tip
+Package: https://pub.dev/packages/local_auth
+:::
+
+:::note
+Implementation Date: Jul/23
+
+Version: 2.1.6
+:::
+
+## Description Methods
+
+- Device Has Biometrics: check if have biometrics methods on device;
+- Get Available Biometrics: Differente devices have diferent methods;
+- Autenticate: Let OS determine authentication method;
+- Cancel Authentication;
+
+## Abstract Class
+
+```dart
+abstract class BiometricsService {
+  Future<bool> deviceHasBiometrics();
+  Future<List<BiometricType>> getAvailableBiometrics();
+  Future<bool> autenticate({required String authReason});
+  Future<bool> authenticateWithBiometrics({required String authReason});
+  Future<bool> cancelAuthentication();
+}
+```
+
+### Implementation Class
+
+```dart
+class LocalAuth implements BiometricsService {
+  final LocalAuthentication auth;
+
+  LocalAuth(this.auth);
+
+  @override
+  Future<bool> autenticate({required String authReason}) async {
+    bool authenticated = false;
+    try {
+      authenticated = await auth.authenticate(
+        authMessages: const [
+          AndroidAuthMessages(
+            signInTitle: 'Confirmar sua identidade',
+            cancelButton: 'Cancelar',
+          ),
+          IOSAuthMessages(
+            cancelButton: 'Cancelar',
+          )
+        ],
+        localizedReason: authReason,
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+        ),
+      );
+    } on PlatformException catch (e) {
+      log(e.toString());
+      log(StackTrace.current.toString());
+    }
+    return authenticated;
+  }
+
+  @override
+  Future<bool> authenticateWithBiometrics({required String authReason}) async {
+    bool authenticated = false;
+    try {
+      authenticated = await auth.authenticate(
+        localizedReason: authReason,
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
+        authMessages: const [
+          AndroidAuthMessages(
+            signInTitle: 'Confirmar sua identidade',
+            cancelButton: 'Cancelar',
+            biometricHint: '',
+          ),
+          IOSAuthMessages(
+            cancelButton: 'Cancelar',
+          )
+        ],
+      );
+      return authenticated;
+    } on PlatformException catch (e) {
+      e.runtimeType;
+      log(e.toString());
+      log(StackTrace.current.toString());
+
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> cancelAuthentication() async {
+    return await auth.stopAuthentication();
+  }
+
+  @override
+  Future<bool> deviceHasBiometrics() async {
+    late bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      canCheckBiometrics = false;
+      log(e.toString());
+      log(StackTrace.current.toString());
+    }
+
+    return canCheckBiometrics;
+  }
+
+  @override
+  Future<List<BiometricType>> getAvailableBiometrics() async {
+    late List<BiometricType> availableBiometrics;
+    try {
+      availableBiometrics = await auth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      availableBiometrics = <BiometricType>[];
+      log(e.toString());
+      log(StackTrace.current.toString()); 
+    }
+
+    return availableBiometrics;
+  }
+}
+```

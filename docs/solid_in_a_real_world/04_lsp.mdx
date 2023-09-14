@@ -1,0 +1,27 @@
+# LSP - Liskov Substituition Principle
+
+:::tip
+"...para criar software a partir de partes intercambiáveis, estas partes devem aderir a um contrato que permita que elas sejam substituídas umas pelas outras".
+
+
+"...ao longo dos anos, o LSP se transformou em um princípio mais amplo de design de software, aplicável a interfaces e implementações. (...) o LSP é aplicável porque há usuários que dependem de interfaces bem definidas e da capacidade de substituição das implementações destas interfaces".
+
+Concluímos que, embora a abstração de dados seja mais importante, a hierarquia de tipos estende sua utilidade. Além disso, a herança às vezes é necessária para expressar a hierarquia de tipos e, portanto, é um mecanismo útil…" (Barbara Liskov)
+
+:::
+
+```dart
+class A {
+    quemSou() => 'Eu sou o SAM';
+}
+
+Class B extends A {
+    @override
+    quemSou() => 'Eu sou EDEN';
+}
+
+Class C extends A {
+    @override
+    quemSou() => 'Eu sou CHARLES';
+}
+```
