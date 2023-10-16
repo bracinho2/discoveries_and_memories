@@ -120,6 +120,10 @@ We need to test. And now?
     - Triple;
 
 ### Pages
+
 - Best Practices With Widgets;
 - Build Pages and Components;
+
+### Philosophy and Practice
+- Modular concept;
 

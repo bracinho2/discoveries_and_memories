@@ -1,0 +1,140 @@
+# Flutter Local Notifications
+
+:::tip
+Package: https://pub.dev/packages/flutter_local_notifications
+:::
+
+:::note
+Implementation Date: JUL/23
+
+Version: ^15.1.0+1
+:::
+
+## Description Methods
+- init: precisamos iniciar o serviço;
+- showNotification: exibe uma mensagem enviada;
+- checkForNotifications: verifica se existe alguma mensagem nova;
+
+
+## Modelo de mensagem
+Para este serviço necessitamos de uma classe modelo para mensagens com seus respectivos atributos;
+
+```dart
+
+class PushNotificationMessageModel {
+  final int id;
+  final String? title;
+  final String? body;
+  final String? payload;
+  EduPushNotificationMessage({
+    required this.id,
+    this.title,
+    this.body,
+    this.payload,
+  });
+}
+
+```
+
+## Abstract Class
+
+```dart
+
+abstract class NotificationService {
+  init();
+  Future<void> showNotification(
+      {required PushNotificationMessageModel message});
+  checkForNotifications();
+
+}
+
+````
+
+## Implementation Class
+
+```dart
+
+class LocalPushNotificationService implements NotificationService{
+  final FlutterLocalNotificationsPlugin pushNotificationPlugin;
+
+  LocalPushNotificationService(this.pushNotificationPlugin);
+
+  Future<void> init() async {
+    AndroidInitializationSettings initializationSettingsAndroid =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    pushNotificationPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestPermission();
+
+    var initializationSettingsIOS = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      onDidReceiveLocalNotification:
+          (int id, String? title, String? body, String? payload) async {
+        await _onSelectedNotification(payload: payload);
+      },
+    );
+
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    await pushNotificationPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse:
+            (NotificationResponse notificationResponse) async {
+      await _onSelectedNotification(payload: notificationResponse.payload);
+    });
+  }
+
+  Future<void> showNotification(
+      {required EduPushNotificationMessage message}) async {
+    const androidMessageShowDetails = AndroidNotificationDetails(
+      'LembretesAndroid',
+      'LembretesAndroid',
+      channelDescription: 'Este é um canal para lembretes',
+      importance: Importance.max,
+      enableVibration: true,
+    );
+
+    const iOSMessageShowDetails = DarwinNotificationDetails(
+        presentBanner: true,
+        presentSound: true,
+        subtitle: 'Lembretes_iOS',
+        threadIdentifier: 'Lembretes_iOS');
+
+    pushNotificationPlugin.show(
+      message.id,
+      message.title,
+      message.body,
+      const NotificationDetails(
+        android: androidMessageShowDetails,
+        iOS: iOSMessageShowDetails,
+      ),
+      payload: message.payload,
+    );
+  }
+
+  checkForNotifications() async {
+    final details =
+        await pushNotificationPlugin.getNotificationAppLaunchDetails();
+    if (details != null && details.didNotificationLaunchApp) {
+      _onSelectedNotification(payload: details.notificationResponse?.payload);
+    }
+  }
+
+  _onSelectedNotification({String? payload}) async {
+    if (payload != null && payload.isNotEmpty) {
+      //Aqui se pode tomar alguma decisão para alguma página;
+      //Modular.to.pushNamed(payload);
+    }
+  }
+}
+
+```
+
+:::danger
+
+Contribuitor: BrAcInhO
+
+:::

@@ -1,0 +1,216 @@
+# API Client
+
+:::tip
+Package: https://pub.dev/packages/dio
+:::
+
+:::note
+Implementation Date: AGO/23
+
+Version: 5.3.2
+:::
+
+## Description Methods
+- get;
+- post;
+- delete;
+- patch;
+- put;
+
+## Abstract class
+
+```dart
+
+abstract class MyApiClient {
+  Future<ClientResponse> get({
+    required String path,
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? headers,
+  });
+
+  Future<ClientResponse> post({
+    required String path,
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? headers,
+  });
+
+  Future<ClientResponse> delete({
+    required String path,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? headers,
+  });
+
+  Future<ClientResponse> patch({
+    required String path,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? headers,
+  });
+
+  Future<ClientResponse> put({
+    required String path,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? headers,
+  });
+}
+
+class ApiHeader {
+  final Map<String, dynamic> data;
+  const ApiHeader({
+    required this.data,
+  });
+}
+```
+
+# Response Class
+
+```dart
+
+class ClientResponse {
+  final dynamic data;
+  final int statusCode;
+
+  const ClientResponse({
+    required this.data,
+    required this.statusCode,
+  });
+
+  @override
+  String toString() => 'ClientResponse(data: $data, statusCode: $statusCode)';
+}
+````
+
+## Error Class
+
+```dart
+
+class HttpServiceError extends Failure {
+  final String message;
+  final StackTrace? stackTrace;
+  HttpServiceError({required this.message, this.stackTrace});
+}
+
+
+```
+
+## Implementation Class
+
+```dart
+
+class MyApiClientDio implements MyApiClient {
+  final Dio _dio;
+
+  MyApiClientDio(this._dio) {
+    _dio.options.baseUrl = 'https://api.chucknorris.io/jokes';
+  }
+
+  @override
+  Future<ClientResponse> get({
+    required String path,
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? headers,
+  }) async {
+    try {
+      final response = await _dio.get(
+        path,
+        options: Options(headers: headers),
+        queryParameters: queryParams,
+      );
+      return ClientResponse(
+          data: response.data, statusCode: response.statusCode!);
+    } on DioException catch (e, s) {
+      log(e.toString());
+      log(s.toString());
+      throw HttpServiceError(message: e.toString(), stackTrace: s);
+    }
+  }
+
+  @override
+  Future<ClientResponse> post({
+    required String path,
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? headers,
+  }) async {
+    try {
+      final response = await _dio.post(
+        path,
+        data: data,
+        queryParameters: queryParams,
+        options: Options(
+          headers: headers,
+        ),
+      );
+      return ClientResponse(
+          data: response.data, statusCode: response.statusCode!);
+    } on DioException catch (e, s) {
+      log(e.toString());
+      log(s.toString());
+      throw HttpServiceError(message: e.toString(), stackTrace: s);
+    }
+  }
+
+  @override
+  Future<ClientResponse> delete({
+    required String path,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? headers,
+  }) async {
+    try {
+      final response = await _dio.delete(path,
+          data: data, options: Options(headers: headers));
+      return ClientResponse(
+          data: response.data, statusCode: response.statusCode!);
+    } on DioException catch (e, s) {
+      log(e.toString());
+      log(s.toString());
+      throw HttpServiceError(message: e.toString(), stackTrace: s);
+    }
+  }
+
+  @override
+  Future<ClientResponse> patch({
+    required String path,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? headers,
+  }) async {
+    try {
+      final response = await _dio.patch(path,
+          data: data, options: Options(headers: headers));
+      return ClientResponse(
+          data: response.data, statusCode: response.statusCode!);
+    } on DioException catch (e, s) {
+      log(e.toString());
+      log(s.toString());
+      throw HttpServiceError(message: e.toString(), stackTrace: s);
+    }
+  }
+
+  @override
+  Future<ClientResponse> put({
+    required String path,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? headers,
+  }) async {
+    try {
+      final response =
+          await _dio.put(path, data: data, options: Options(headers: headers));
+      return ClientResponse(
+          data: response.data, statusCode: response.statusCode!);
+    } on DioException catch (e, s) {
+      log(e.toString());
+      log(s.toString());
+      throw HttpServiceError(message: e.toString(), stackTrace: s);
+    }
+  }
+}
+
+```
+
+:::danger
+
+Contribuitor: BrAcInhO
+
+:::
+
+

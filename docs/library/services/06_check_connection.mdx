@@ -1,0 +1,90 @@
+# Check Available Connection
+
+:::tip
+Package: https://pub.dev/packages/internet_connection_checker
+:::
+
+:::note
+Implementation Date: OUT/23
+
+Version: 1.0.0+1
+:::
+
+## Description Methods
+- _getInternetStatus: verifica manualmente se há conexão com a internet;
+- _getConnectionStatus: é uma stream que pode ser assinada. Ela fornecerá o status periódico da conexão com a internet;
+- _hasListeners: retorna se existem assinantes na stream;
+- _closeStream: fecha definivamente a stream;
+
+## Observações
+Este pacote verifica se realmente o dispositivo está com conexão ativa. Os métodos são baseados em pings em diferentes destinos.
+
+
+## Implementation Class
+
+```dartevanescet
+class InternetConnectionCheckerService {
+  InternetConnectionCheckerService._internal();
+
+  static final InternetConnectionCheckerService _instance =
+      InternetConnectionCheckerService._internal();
+
+  static InternetConnectionCheckerService get instance => _instance;
+
+  final InternetConnectionChecker _checker = InternetConnectionChecker();
+
+  StreamController<bool> controller = StreamController();
+
+  Future<bool> get checkInternetStatus => _getInternetStatus();
+
+  Stream<bool> get getStatus => _getConnectionStatus();
+
+  bool get hasListeners => _hasListeners();
+
+  void get close => _closeStream();
+
+  Future<bool> _getInternetStatus() async {
+    return _checker.hasConnection;
+  }
+
+  Stream<bool> _getConnectionStatus() async* {
+    _getStatusFromPlugIn().onData((status) {
+      switch (status) {
+        case InternetConnectionStatus.connected:
+          controller.sink.add(true);
+          break;
+        case InternetConnectionStatus.disconnected:
+          controller.sink.add(false);
+          break;
+      }
+    });
+
+    yield* controller.stream;
+  }
+
+  StreamSubscription<InternetConnectionStatus> _getStatusFromPlugIn() {
+    return _checker.onStatusChange.listen((status) {
+      switch (status) {
+        case InternetConnectionStatus.connected:
+          break;
+        case InternetConnectionStatus.disconnected:
+          break;
+      }
+    });
+  }
+
+  bool _hasListeners() {
+    return controller.hasListener;
+  }
+
+  void _closeStream() {
+    controller.close();
+  }
+}
+```
+
+:::danger
+
+Contribuitor: BrAcInhO
+
+:::

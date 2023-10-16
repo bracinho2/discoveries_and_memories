@@ -1,0 +1,142 @@
+# Custom BottomBar with Badge Icon
+
+:::tip
+
+Pode ser utilizado com ENUM ou com Entidades;
+    - Utiliza generics;
+    - A lista de items deverá ser passada de fora para dentro;
+:::
+
+:::danger
+
+Customização do Botão. Atenção para o Generics!
+
+:::
+
+:::note
+Classe do Bottom Bar Item
+:::
+
+```dart
+class GuaraniBottomBarItem {
+  GuaraniBottomBarItem({
+    required this.label,
+    required this.icon,
+    required this.activeIcon,
+    this.countBadge = 0,
+  });
+  final String label;
+  final IconData icon;
+  final IconData activeIcon;
+  final int countBadge;
+}
+```
+
+:::note
+Classe da Custom Bottom Bar
+:::
+
+```dart
+class GuaraniBottomBar extends StatefulWidget {
+  const GuaraniBottomBar({
+    super.key,
+    required this.items,
+    required this.onIndexSelected,
+  });
+
+  final List<GuaraniBottomBarItem> items;
+  final void Function(int index) onIndexSelected;
+
+  @override
+  State<GuaraniBottomBar> createState() => _GuaraniBottomBarState();
+}
+
+class _GuaraniBottomBarState extends State<GuaraniBottomBar> {
+  int selectedItem = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      items: List.from(
+        widget.items.map(
+          (item) => BottomNavigationBarItem(
+            icon: GuaraniBadgeIcon(
+              icon: item.icon,
+              countBadge: item.countBadge,
+            ),
+            activeIcon: GuaraniBadgeIcon(
+              icon: item.icon,
+              countBadge: item.countBadge,
+            ),
+            label: item.label,
+          ),
+        ),
+      ),
+      currentIndex: selectedItem,
+      landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
+      selectedLabelStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+      ),
+      onTap: (value) {
+        widget.onIndexSelected(value);
+        setState(() {
+          selectedItem = value;
+        });
+      },
+    );
+  }
+}
+```
+
+:::note
+Classe do Icon Badge
+:::
+
+```dart
+class GuaraniBadgeIcon extends StatelessWidget {
+  const GuaraniBadgeIcon({
+    super.key,
+    required this.icon,
+    required this.countBadge,
+  });
+
+  final IconData icon;
+  final int countBadge;
+
+  @override
+  Widget build(BuildContext context) {
+    if (countBadge > 0) {
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Icon(icon),
+          Positioned(
+              right: -5,
+              top: -5,
+              child: CircleAvatar(
+                radius: 6,
+                backgroundColor: Colors.red,
+                child: Text(
+                  '$countBadge',
+                  style: const TextStyle(
+                    fontSize: 6,
+                    color: Colors.white,
+                  ),
+                ),
+              )),
+        ],
+      );
+    }
+    return Icon(icon);
+  }
+}
+```
+:::danger
+Contributor: Bwolf
+
+Videos:
+
+[Bottom App Bar ( LFood - O Melhor app de Comida do Mundo Ep. 2)](https://www.youtube.com/watch?v=VVCMG2t8wxk&list=PL7M5mCCVCOMlcUoTYx1Fkk1tlpxFl3yd2&index=2)
+
+[Colocando Regra na BottomBar ( LFood Ep. 3)](https://www.youtube.com/watch?v=NTkexx_C_A4&list=PL7M5mCCVCOMlcUoTYx1Fkk1tlpxFl3yd2&index=3)
+:::

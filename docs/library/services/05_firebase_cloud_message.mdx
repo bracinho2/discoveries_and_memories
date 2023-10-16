@@ -1,0 +1,90 @@
+# Firebase Cloud Message
+
+:::tip
+Package: https://pub.dev/packages/firebase_messaging
+:::
+
+:::note
+Implementation Date: JUL/23
+
+Version: ^14.6.5
+:::
+
+## Description Methods
+- init: precisamos iniciar o serviço;
+
+```dart
+class FirebaseCloudMessage {
+  final LocalPushNotificationService _localPushNotificationService;
+  FirebaseCloudMessage(
+    this._localPushNotificationService,
+  );
+
+  Future<void> init() async {
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      badge: true,
+      sound: true,
+      alert: true,
+    );
+
+    getDeviceFirebaseToken();
+    _onMessage();
+  }
+
+  getDeviceFirebaseToken() async {
+    final token = await FirebaseMessaging.instance.getToken();
+    print('O token do Firebase é: $token');
+  }
+
+  _onMessage() {
+    FirebaseMessaging.onMessage.listen(
+      (message) {
+        RemoteNotification? notification = message.notification;
+        AndroidNotification? android = message.notification?.android;
+        AppleNotification? iOS = message.notification?.apple;
+
+        if (notification != null && android != null) {
+          final localPushMessage = EduPushNotificationMessage(
+              id: android.hashCode,
+              title: notification.title!,
+              body: notification.body!,
+              payload: message.data['payload'] ?? '');
+
+          _localPushNotificationService.showNotification(
+              message: localPushMessage);
+        }
+
+        if (notification != null && iOS != null) {
+          final localPushMessage = EduPushNotificationMessage(
+              id: iOS.hashCode,
+              title: notification.title!,
+              body: notification.body!,
+              payload: message.data['payload'] ?? '');
+
+          _localPushNotificationService.showNotification(
+              message: localPushMessage);
+        }
+      },
+    );
+  }
+
+  //Escuta diretamente do firebase; Pode-se utilizar sem o push local;
+  onMessageOpenedApp() {
+    FirebaseMessaging.onMessageOpenedApp.listen(_goToPageAfterMessage);
+  }
+
+  _goToPageAfterMessage(RemoteMessage message) {
+    final String payload = message.data['payload'] ?? '';
+    if (payload.isNotEmpty) {
+      //print('Meu Payload do Firebase é $payload');
+    }
+  }
+}
+```
+
+:::danger
+
+Contribuitor: BrAcInhO
+
+:::
